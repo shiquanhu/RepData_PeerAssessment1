@@ -96,7 +96,12 @@ library(ggplot2)
 g <- ggplot(intervalMean2, aes(interval, meansteps), facets = . ~ wend, type="l", xlab = "interval", ylab="mean steps") 
 g <- g + geom_line() 
 g <- g + facet_grid(wend ~ .)
-g <- g + theme(strip.text.x = element_text(size=8, angle=75), strip.background = element_rect(colour="red", fill="#CCCCFF"))
+g <- g + labs(title = "Average interval activity - weekday vs weekend")
+g <- g + theme(strip.text.x = element_text(size=8, angle=75), 
+               strip.background = element_rect(colour="red", fill="#CCCCFF"))
+
+##save to a file
+##ggsave(filename="AverageIntervalWeek.png", plot=g)
 print(g)
 
 ```
