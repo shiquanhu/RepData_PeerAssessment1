@@ -1,3 +1,4 @@
+
 Reproducible Research Assessment1
 ================================================================
 ###Loading and preprocessing the data
@@ -19,12 +20,17 @@ library(plyr)
 mytotal <- ddply(mydata, c("date"), summarize, totalsteps = sum(steps))
 hist(mytotal$totalsteps, main="Distribution of total number of steps taken each day", xlab="total steps" )
 
+## the total number of steps taken each day
+mytotal
 ```
 
 2.  Calculate and report the mean and median total number of steps taken per day
 
 ```{r}
 mymedianmean <- ddply(mydata, c("date"), summarize, "meansteps" = mean(steps), "mediansteps"=as.numeric(median(steps)))
+
+## Mean and Median
+mymedianmean
 ```
 
 
@@ -68,4 +74,30 @@ alldata1 <- ddply(alldata, ~ interval, transform, steps = myfun(steps))
 ```
 
 4.	Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```{r}
+mytotal2 <- ddply(alldata1, c("date"), summarize, totalsteps = sum(steps))
+hist(mytotal2$totalsteps, main="Distribution of total number of steps taken each day", xlab="total steps" )
+
+```
+
+###Are there differences in activity patterns between weekdays and weekends?
+
+1.  Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+2.	Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+```{r}
+
+alldata1$wend <- as.factor(ifelse(weekdays(as.Date(alldata1$date)) %in% c("Saturday","Sunday"), "Weekend", "Weekday"))
+
+intervalMean2 <- ddply(alldata1, c("interval", "wend" ), summarize, meansteps = mean(steps))
+
+library(ggplot2)
+
+g <- ggplot(intervalMean2, aes(interval, meansteps), facets = . ~ wend, type="l", xlab = "interval", ylab="mean steps") 
+g <- g + geom_line() 
+g <- g + facet_grid(wend ~ .)
+g <- g + theme(strip.text.x = element_text(size=8, angle=75), strip.background = element_rect(colour="red", fill="#CCCCFF"))
+print(g)
+
+```
 
